@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  strapi:
+    # Brug den tidligere definerede Dockerfile til at bygge image
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Eksponer port 1337 til at tilgå Strapi's brugergrænseflade
+    ports:
+      - "1337:1337"
+    # Definerer en afhængighed af databasen
+    depends_on:
+      - strapiDB
+    # Miljøvariabler til Strapi
+    environment:
+      DATABASE_CLIENT: mysql
+      DATABASE_HOST: db
+      DATABASE_PORT: 3306
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: example
+
+  strapiDB:
+    container_name: strapiDB
+    platform: linux/amd64 #for platform error on Apple M1 chips
+    restart: unless-stopped
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: strapi
+      MYSQL_USER: strapi
+      MYSQL_PASSWORD: example
+    volumes:
+      - strapi-data:/var/lib/mysql
+      #- ./data:/var/lib/mysql # if you want to use a bind folder
+    ports:
+      - "3306:3306"
+    networks:
+      - strapi
+
+volumes:
+  strapi-data:
+
+networks:
+  strapi:
+    name: Strapi
+    driver: bridge
