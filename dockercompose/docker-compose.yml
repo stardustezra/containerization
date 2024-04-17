@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  birthe:
+    image: nginx:stable
+    ports:
+      - 1234:80
+
+  ubuntu:
+    image: ubuntu:latest
+    stdin_open: true
+    tty: true
