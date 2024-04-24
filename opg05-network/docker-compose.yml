@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx
+    container_name: my-nginx-container
+    networks:
+      - my-custom-bridge-network
+
+networks:
+  my-custom-bridge-network:
+    driver: bridge
